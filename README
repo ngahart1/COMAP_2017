@@ -1,1 +1,27 @@
 Simulation of traffic at toll booth for COMAP MCM competition, 2017.
+
+Below is a crude picture of a simple 1->3 merge. Cars enter the toll area
+from the bottom, proceeding to choose a lane and move towards the toll booths.
+Toll booth EX is "express," meaning it is designed solely for cars with an
+electronic transponder. Cars know this, and will only enter the left-most lane
+when entering the toll area if they have a transponder. Due to the significant
+time savings of this lane compared to cash lanes, all cars with a transponder
+will enter this lane. Toll boths labeled CS are cash lanes. We assume it takes
+10 seconds to pay in a cash lane, once out of the queue.
+
+|  |
+|  |__
+|     |
+|  '  |
+|  '  |__
+|  '     |
+|  '  '  |
+|  '  '  |
+|EX CS CS|
+|  '  '  |
+|  '  '  |
+|  '  '  |
+|  '  '  |
+ |      |
+  |    |
+   |  |
