@@ -5,13 +5,14 @@ public class Car {
     private static final int DISTANCE_TO_PLAZA = 1000;
     private static final double ACCELERATION = 11.5; //ft/s
     private static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
+    private static final double CAR_LENGTH = 15.0;
 
     private int number;
     private Lane lane;
     private double position;
     private double speed;
     private boolean hasEZPass;
-    private int time;
+    private double time;
     private int timeAtPlaza;
     private int boothSelected;
     private int startTime;
@@ -23,13 +24,14 @@ public class Car {
         this.speed = DEFAULT_SPEED;
         this.number = num;
         this.startTime = start;
+        this.lane = Road.lanes[this.chooseLane()]; 
     }
 
     public int getNumber() {
         return this.number;
     }
 
-    public int getTime() {
+    public double getTime() {
         return this.time;
     }
 
@@ -65,26 +67,43 @@ public class Car {
         /*if (this.position == 0) {
             int lane_number = this.chooseLane();
         }*/
-        if (!this.lane.forEZPass() && this.position == DISTANCE_TO_PLAZA) {
+        if (!this.lane.forEZPass() && this.position == TollSimulator.DISTANCE_TO_PLAZA) {
             //i.e. at tollbooth
+            System.out.println("IN HERE");
             this.timeAtPlaza += TollSimulator.TIME_STEP;
             if (this.timeAtPlaza == PAY_TOLL_TIME) {
                 this.lane.setMoving(true);
                 this.position += 0.1; //so that if statement fails
+                this.lane.leave(); 
             }
-        } else if (!this.lane.forEZPass() && this.position > DISTANCE_TO_PLAZA) {
+        } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
             //starting to speed back up again
             if (speed < 60) {
                 speed += ACCELERATION * TollSimulator.TIME_STEP;
             }
-        } else if (!this.lane.forEZPass() && this.position < DISTANCE_TO_PLAZA) {
+        } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
+            // first, choose at what distance you want to be stopped
+            if (speed > 2) {
+                speed -= this.deceleration() * TollSimulator.TIME_STEP;
+            } else {
+                if (speed > 0) {
 
+                speed = 0;
+                this.position = TollSimulator.DISTANCE_TO_PLAZA - (this.lane.getLength() * CAR_LENGTH);
+                
+            }
         }
-        // the other condition is obviously if 
         this.time += TollSimulator.TIME_STEP;
         this.position += this.speed * TollSimulator.TIME_STEP;
     } 
     
+    private double deceleration() {
+        int carsAhead = this.lane.getLength();
+        double distanceUntilStop = TollSimulator.DISTANCE_UNTIL_PLAZA - 15.0*carsAhead;
+        // use formula: v_f^2 = v_o^2 + 2*a*d
+        return Math.pow(this.speed, 2) / (2.0 * distanceUntilStop);
+    }
+
     public void changeLane(Lane l) {
         this.lane = l;
     }
@@ -114,7 +133,3 @@ public class Car {
         }
     }
 }
-
-
-
-    
