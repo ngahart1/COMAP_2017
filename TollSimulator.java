@@ -10,9 +10,9 @@ public final class TollSimulator {
 
     public static Road setupRoad() {
         Road r = new Road(3);
-        for (int i = 0; i < 3; i++) {
-            r.insert(i, new Lane(i));
-        }
+        r.insert(0, new Lane(0, true));
+        r.insert(1, new Lane(1, false));
+        r.insert(2, new Lane(2, false));
         return r;
     }
 
