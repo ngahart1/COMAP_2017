@@ -119,9 +119,9 @@ public class Car {
      * Choose randomly in event of tie.
      */
     public Lane shorter() {
-        if (Road.lanes[1].getLength() > Road.lanes[2].getLength()) {
+        if (Road.lanes[1].getLength() < Road.lanes[2].getLength()) {
             return Road.lanes[1];
-        } else if (Road.lanes[1].getLength() < Road.lanes[2].getLength()) {
+        } else if (Road.lanes[2].getLength() < Road.lanes[1].getLength()) {
             return Road.lanes[2];
         } else {
             return Road.lanes[(int) (Math.random()*2) + 1];
