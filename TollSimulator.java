@@ -4,8 +4,8 @@ import java.util.Iterator;
 public final class TollSimulator {
     final static int SIMULATION_TIME = 1000;
     final static int TIME_STEP = 1;
-    final static int DISTANCE_TO_PLAZA = 1000;
-    final static int TOTAL_DISTANCE = 2000;
+    final static int DISTANCE_TO_PLAZA = 500;
+    final static int TOTAL_DISTANCE = 1500;
     static Road road;
 
     public static Road setupRoad() {
@@ -40,7 +40,9 @@ public final class TollSimulator {
         int carNumber = 0;
         for (int t = 0; t < SIMULATION_TIME; t += TIME_STEP) {
             // one new car created each time step
-            for (int n = 0; n < getPoisson(.25); n++) {    
+            int numCarsToAdd = getPoisson(.25);
+            //for (int n = 0; n < numCarsToAdd; n++) {    
+            if (Math.random() > .75) {
                 cars.add(new Car(Math.random() > 0.5, carNumber++, t));
             }
             Iterator<Car> iter = cars.iterator();
