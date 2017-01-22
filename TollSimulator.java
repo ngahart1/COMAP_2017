@@ -22,18 +22,16 @@ public final class TollSimulator {
      * @return a Poisson random variable, with appropriate lambda
      * parameter.
      */
-    /*private static int getPoisson(double probInASecond) {
+    private static int getPoisson(double probInASecond) {
         int numberOfExponentials = 0;
-	    for (int i = 0; i < SIMULATION_TIME; i += TIME_STEP){
-		    double Current_Sum = 0;
-		    while(Current_Sum < 1){
-			    numberOfExponentials += 1;
-			    Current_Sum += Math.random();
-		    }
-		    int Poisson_Value = numberOfExponentials;
-	    }
+		double Current_Sum = 0;
+        while(Current_Sum < 1){
+            numberOfExponentials += 1;
+            Current_Sum += Math.random();
+        }
+        int Poisson_Value = numberOfExponentials;
         return Poisson_Value;
-    }*/
+    }
 
     public static void main(String[] args) {
         System.out.println("CAR_NUMBER,START_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED");
@@ -42,7 +40,7 @@ public final class TollSimulator {
         int carNumber = 0;
         for (int t = 0; t < SIMULATION_TIME; t += TIME_STEP) {
             // one new car created each time step
-            if (Math.random() > 0.8) {
+            for (int n = 0; n < getPoisson(.25); n++) {    
                 cars.add(new Car(Math.random() > 0.5, carNumber++, t));
             }
             Iterator<Car> iter = cars.iterator();
