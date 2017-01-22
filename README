@@ -25,3 +25,8 @@ will enter this lane. Toll boths labeled CS are cash lanes. We assume it takes
  |      |
   |    |
    |  |
+
+We assume deceleration is linear: a car observes how far it has to go to reach the
+end of the lane, then slows down such that it stops 15 feet behind the last car in
+line.
+-Acceleration of average car: 3.5 m/s = 11.5 ft/s
