@@ -15,24 +15,26 @@
 
 public class Lane {
 
-    private PriorityQueue queue;
+    private LinkedList queue;
     private int number;
     private boolean moving;
     private int length;
 
     public Lane(int lane_num) {
-        this.queue = new PriorityQueue<Car>() 
+        this.queue = new LinkedList<Car>() 
         this.number = lane_num
         this.length = 0
         this.moving = True
     }
 
     public void enter(Car car) {
-        this.queue.add(car)
+        this.queue.addLast(car)
+        this.length = this.length + 1
     }
 
     public Car leave() {
-        return this.queue.poll()
+        this.length = this.length - 1
+        return this.queue.pollFirst()
     }
 
     public int getNumber() {
