@@ -12,3 +12,41 @@
  *  leave, when a car proceeds to the end of the toll booth and leaves
  *  getNumber, setNumber, getMoving, setMoving, getLength
 */
+
+public class Lane {
+
+    private Queue queue;
+    private int number;
+    private boolean moving;
+    private int length;
+
+    public Lane() {
+    }
+
+    public void enter() {
+    
+    }
+
+    public void leave() {
+    }
+
+    public int getNumber() {
+        return this.number
+    }
+
+    public void setNumber(new_num) {
+        this.number = new_num
+    }
+
+    public boolean getMoving() {
+        return this.moving
+    }
+
+    public void setMoving(is_moving) {
+        this.moving = is_moving
+    }
+
+    public int getLength() {
+        return this.length
+    } 
+}
