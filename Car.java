@@ -69,7 +69,6 @@ public class Car {
         }*/
         if (!this.lane.forEZPass() && this.lane.firstInLine(this)) {
             //i.e. at tollbooth
-            System.out.println("IN HERE");
             this.timeAtPlaza += TollSimulator.TIME_STEP;
             if (this.timeAtPlaza == PAY_TOLL_TIME) {
                 this.lane.setMoving(true);
@@ -82,7 +81,6 @@ public class Car {
                 speed += ACCELERATION * TollSimulator.TIME_STEP;
             }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
-            System.out.println("IN HERE");
             speed -= DECELERATION;
             if (this.position < DECELERATION) {
                 this.position = TollSimulator.DISTANCE_TO_PLAZA;
