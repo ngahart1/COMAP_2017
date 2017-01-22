@@ -1,4 +1,4 @@
-import java.util.Random;
+import java.lang.StringBuilder;
 
 public class Car {
     private static final int PAY_TOLL_TIME = 10; //takes 10 seconds to pay toll
@@ -7,18 +7,46 @@ public class Car {
     private static final int ACCELERATION = 11.5; //ft/s
     private static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
 
+    private int number;
     private Lane lane;
     private double position;
     private double speed;
     private boolean hasEZPass;
     private int time;
     private int timeAtPlaza;
+    private int boothSelected;
+    private int startTime;
 
-    public Car(boolean hasPass) {
+    public Car(boolean hasPass, int num, int start) {
         this.hasEZPass = hasPass;
         this.position = 0;
         this.time = 0;
         this.speed = DEFAULT_SPEED;
+        this.number = num;
+        this.startTime = start;
+    }
+
+    public int getNumber() {
+        return this.number;
+    }
+
+    public int getTime() {
+        return this.time;
+    }
+
+    public int boothSelected() {
+        return this.boothSelected;
+    }
+
+    /**Prints vital information in csv-format for ease of data analysis.*/
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(this.number + ',');
+        s.append(this.startTime + ','); 
+        s.append(this.time + ',');
+        s.append(this.hasEZPass + ',');
+        s.append(this.boothSelected);
+        return s.toString();
     }
 
     /** The catch-all method for the car continuing through the process
@@ -62,11 +90,12 @@ public class Car {
     public int chooseLane() {
         int lane_num;
         if (this.hasEZPass) {
-            lane = lanes[0]; //the leftmost, EZPass lane
+            lane_num = lanes[0]; //the leftmost, EZPass lane
         } else {
-           lane = this.shorter(); 
+            lane_num = this.shorter(); 
         }
-        return lane;
+        this.boothSelected = lane_num;
+        return lane_num;
     }
 
     /** Returns either lane 1 or 2, whichever has the shorter line.
