@@ -1,11 +1,11 @@
 import java.lang.StringBuilder;
 
 public class Car {
-    private static final int PAY_TOLL_TIME = 15; //takes 15 seconds to pay cash toll
-    private static final double ACCELERATION = 11.5; //ft/s
-    private static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
-    private static final double CAR_LENGTH = 15.0;
-    private static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2*TollSimulator.DISTANCE_TO_PLAZA);
+    static final int PAY_TOLL_TIME = 15; //takes 15 seconds to pay cash toll
+    static final double ACCELERATION = 11.5; //ft/s
+    static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
+    static final double CAR_LENGTH = 15.0;
+    static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2*TollSimulator.DISTANCE_TO_PLAZA);
 
     private int number;
     private Lane lane;
@@ -82,7 +82,7 @@ public class Car {
             }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
             speed -= DECELERATION;
-            if (this.position < DECELERATION) {
+            if ((TollSimulator.DISTANCE_TO_PLAZA - this.position) < DECELERATION) {
                 this.position = TollSimulator.DISTANCE_TO_PLAZA;
                 this.speed = 0;
                 this.lane.enter(this);
