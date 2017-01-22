@@ -4,7 +4,7 @@ import java.util.Iterator;
 public final class TollSimulator {
     final static int SIMULATION_TIME = 1000;
     final static int TIME_STEP = 1;
-    final static int DISTANCE_UNTIL_PLAZA = 1000;
+    final static int DISTANCE_TO_PLAZA = 1000;
     final static int TOTAL_DISTANCE = 2000;
     static Road road;
 
@@ -22,19 +22,18 @@ public final class TollSimulator {
      * @return a Poisson random variable, with appropriate lambda
      * parameter.
      */
-    private static int getPoisson(double probInASecond) {
-        int numberOfExpontentials = 0;
-	for (int i = 0; i <SIMULATION_TIME; i+=TIME_STEP){
-		double Current_Sum = 0;
-		while(Current_Sum<1){
-			numberOfExponentials +=1;
-			Current_Sum+=math.Random();
-		}
-		int Poisson_Value = numberOfExponentials;
-	}
-
-        return Poisson_Value
-    }
+    /*private static int getPoisson(double probInASecond) {
+        int numberOfExponentials = 0;
+	    for (int i = 0; i < SIMULATION_TIME; i += TIME_STEP){
+		    double Current_Sum = 0;
+		    while(Current_Sum < 1){
+			    numberOfExponentials += 1;
+			    Current_Sum += Math.random();
+		    }
+		    int Poisson_Value = numberOfExponentials;
+	    }
+        return Poisson_Value;
+    }*/
 
     public static void main(String[] args) {
         System.out.println("CAR_NUMBER,START_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED");
