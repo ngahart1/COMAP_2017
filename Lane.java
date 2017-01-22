@@ -15,45 +15,45 @@
 
 public class Lane {
 
-    private LinkedList queue;
+    //private LinkedList queue;
     private int number;
     private boolean moving;
     private int length;
 
     public Lane(int lane_num) {
-        this.queue = new LinkedList<Car>() 
-        this.number = lane_num
-        this.length = 0
-        this.moving = True
+        //this.queue = new LinkedList<Car>();
+        this.number = lane_num;
+        this.length = 0;
+        this.moving = true;
     }
 
-    public void enter(Car car) {
-        this.queue.addLast(car)
-        this.length = this.length + 1
+    /*public void enter(Car car) {
+        this.queue.addLast(car);
+        this.length = this.length + 1;
     }
 
     public Car leave() {
-        this.length = this.length - 1
-        return this.queue.pollFirst()
-    }
+        this.length = this.length - 1;
+        return this.queue.pollFirst();
+    }*/
 
     public int getNumber() {
-        return this.number
+        return this.number;
     }
 
     public void setNumber(int new_num) {
-        this.number = new_num
+        this.number = new_num;
     }
 
     public boolean getMoving() {
-        return this.moving
+        return this.moving;
     }
 
     public void setMoving(boolean is_moving) {
-        this.moving = is_moving
+        this.moving = is_moving;
     }
 
     public int getLength() {
-        return this.length
+        return this.length;
     } 
 }
