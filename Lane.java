@@ -69,4 +69,8 @@ public class Lane {
     public boolean forEZPass() {
         return this.forEZPass;
     }
+
+    public boolean firstInLine(Car c) {
+        return this.queue.peek() == c;
+    }
 }

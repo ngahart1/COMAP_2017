@@ -6,6 +6,7 @@ public class Car {
     private static final double ACCELERATION = 11.5; //ft/s
     private static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
     private static final double CAR_LENGTH = 15.0;
+    private static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2*DISTANCE_TO_PLAZA);
 
     private int number;
     private Lane lane;
@@ -67,7 +68,7 @@ public class Car {
         /*if (this.position == 0) {
             int lane_number = this.chooseLane();
         }*/
-        if (!this.lane.forEZPass() && this.position == TollSimulator.DISTANCE_TO_PLAZA) {
+        if (!this.lane.forEZPass() && this.lane.firstInLine(this)) {
             //i.e. at tollbooth
             System.out.println("IN HERE");
             this.timeAtPlaza += TollSimulator.TIME_STEP;
@@ -82,27 +83,23 @@ public class Car {
                 speed += ACCELERATION * TollSimulator.TIME_STEP;
             }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
-            // first, choose at what distance you want to be stopped
-            if (speed > 2) {
-                speed -= this.deceleration() * TollSimulator.TIME_STEP;
-            } else {
-                if (speed > 0) {
-
-                speed = 0;
-                this.position = TollSimulator.DISTANCE_TO_PLAZA - (this.lane.getLength() * CAR_LENGTH);
-                
+            speed -= DECELERATION;
+            if (this.position < DECELERATION) {
+                this.position = DISTANCE_TO_PLAZA;
+                this.speed = 0;
+                this.lane.enter(this);
             }
         }
         this.time += TollSimulator.TIME_STEP;
         this.position += this.speed * TollSimulator.TIME_STEP;
     } 
     
-    private double deceleration() {
+    /*private double deceleration() {
         int carsAhead = this.lane.getLength();
         double distanceUntilStop = TollSimulator.DISTANCE_UNTIL_PLAZA - 15.0*carsAhead;
         // use formula: v_f^2 = v_o^2 + 2*a*d
         return Math.pow(this.speed, 2) / (2.0 * distanceUntilStop);
-    }
+    }*/
 
     public void changeLane(Lane l) {
         this.lane = l;
