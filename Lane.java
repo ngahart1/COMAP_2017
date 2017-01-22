@@ -29,9 +29,11 @@ public class Lane {
 
     public void enter(Car car) {
         this.queue.addLast(car)
+        this.length = this.length + 1
     }
 
     public Car leave() {
+        this.length = this.length - 1
         return this.queue.pollFirst()
     }
 
