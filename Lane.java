@@ -13,21 +13,30 @@
  *  getNumber, setNumber, getMoving, setMoving, getLength
 */
 
+import java.util.LinkedList;
+
 public class Lane {
 
-    //private LinkedList queue;
+    private LinkedList<Car> queue;
     private int number;
     private boolean moving;
     private int length;
+    private boolean forEZPass;
 
     public Lane(int lane_num) {
-        //this.queue = new LinkedList<Car>();
+        this.queue = new LinkedList<Car>();
         this.number = lane_num;
         this.length = 0;
         this.moving = true;
+        this.forEZPass = true; //arbitrary
     }
 
-    /*public void enter(Car car) {
+    public Lane(int lane_num, boolean pass) {
+        this(lane_num);
+        this.forEZPass = pass;
+    }
+
+    public void enter(Car car) {
         this.queue.addLast(car);
         this.length = this.length + 1;
     }
@@ -35,7 +44,7 @@ public class Lane {
     public Car leave() {
         this.length = this.length - 1;
         return this.queue.pollFirst();
-    }*/
+    }
 
     public int getNumber() {
         return this.number;
@@ -55,5 +64,9 @@ public class Lane {
 
     public int getLength() {
         return this.length;
-    } 
+    }
+
+    public boolean forEZPass() {
+        return this.forEZPass;
+    }
 }
