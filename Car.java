@@ -77,12 +77,12 @@ public class Car {
             }
         } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
             //starting to speed back up again
-            if (speed < 60) {
-                speed += ACCELERATION * TollSimulator.TIME_STEP;
+            if (this.speed < 60) {
+                this.speed += ACCELERATION * TollSimulator.TIME_STEP;
             }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
             speed -= DECELERATION;
-            if ((TollSimulator.DISTANCE_TO_PLAZA - this.position) < DECELERATION) {
+            if (this.speed < 0) {
                 this.position = TollSimulator.DISTANCE_TO_PLAZA;
                 this.speed = 0;
                 this.lane.enter(this);
