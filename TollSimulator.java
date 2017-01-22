@@ -42,7 +42,9 @@ public final class TollSimulator {
         int carNumber = 0;
         for (int t = 0; t < SIMULATION_TIME; t += TIME_STEP) {
             // one new car created each time step
-            cars.add(new Car(Math.random() > 0.5, carNumber++, t));
+            if (Math.random() > 0.8) {
+                cars.add(new Car(Math.random() > 0.5, carNumber++, t));
+            }
             Iterator<Car> iter = cars.iterator();
             while (iter.hasNext()) {
                 Car c = iter.next();
@@ -57,7 +59,3 @@ public final class TollSimulator {
         }
     }
 }
-
-            
-
-
