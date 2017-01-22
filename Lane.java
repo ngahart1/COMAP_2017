@@ -20,7 +20,7 @@ public class Lane {
     private boolean moving;
     private int length;
 
-    public Lane(lane_num) {
+    public Lane(int lane_num) {
         this.queue = new PriorityQueue<Car>() 
         this.number = lane_num
         this.length = 0
@@ -32,14 +32,14 @@ public class Lane {
     }
 
     public Car leave() {
-        car_out = this.queue.poll()
+        return this.queue.poll()
     }
 
     public int getNumber() {
         return this.number
     }
 
-    public void setNumber(new_num) {
+    public void setNumber(int new_num) {
         this.number = new_num
     }
 
@@ -47,7 +47,7 @@ public class Lane {
         return this.moving
     }
 
-    public void setMoving(is_moving) {
+    public void setMoving(boolean is_moving) {
         this.moving = is_moving
     }
 
