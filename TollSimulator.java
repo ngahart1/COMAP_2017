@@ -36,7 +36,8 @@ public final class TollSimulator {
     }
 
     public static void main(String[] args) {
-        System.out.println("CAR_NUMBER,START_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED");
+        System.out.print("CAR_NUMBER,START_TIME,ENTER_QUEUE_TIME,");
+        System.out.println("LEAVE_TOLL_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED");
         ArrayList<Car> cars = new ArrayList<Car>();
         road = setupRoad();
         int carNumber = 0;

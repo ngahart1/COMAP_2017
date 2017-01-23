@@ -13,9 +13,12 @@ public class Car {
     private double speed;
     private boolean hasEZPass;
     private double time;
-    private int timeAtPlaza;
+    private double timeAtPlaza;
     private int boothSelected;
-    private int startTime;
+    private double startTime;
+    private double atBoothTime;
+    private double leaveBoothTime;
+
 
     public Car(boolean hasPass, int num, int start) {
         this.hasEZPass = hasPass;
@@ -47,7 +50,9 @@ public class Car {
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append(this.number + ",");
-        s.append(this.startTime + ","); 
+        s.append(this.startTime + ",");
+        s.append(this.atBoothTime + ",");
+        s.append(this.leaveBoothTime + ",");
         s.append(this.time + ",");
         s.append(this.hasEZPass + ",");
         s.append(this.boothSelected);
@@ -63,16 +68,13 @@ public class Car {
      *  Will speed back up, then depart
      */
     public void act() {
-        // Instead, will choose lane in main
-        /*if (this.position == 0) {
-            int lane_number = this.chooseLane();
-        }*/
         if (!this.lane.forEZPass() && this.lane.firstInLine(this)) {
             //i.e. at tollbooth
             this.timeAtPlaza += TollSimulator.TIME_STEP;
             if (this.timeAtPlaza == PAY_TOLL_TIME) {
                 this.lane.setMoving(true);
                 this.position += 0.1; //so that if statement fails
+                this.leaveBoothTime = this.time;
                 this.lane.leave(); 
             }
         } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
@@ -86,6 +88,7 @@ public class Car {
                 this.position = TollSimulator.DISTANCE_TO_PLAZA;
                 this.speed = 0;
                 this.lane.enter(this);
+                this.atBoothTime = this.time;
             }
         }
         this.time += TollSimulator.TIME_STEP;
