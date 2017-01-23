@@ -24,10 +24,12 @@ public final class TollSimulator {
      */
     private static int getPoisson(double probInASecond) {
         int numberOfExponentials = 0;
-		double Current_Sum = 0;
-        while(Current_Sum < 1){
+	double Current_Product = 1;
+	double lamba = probInASecond*SIMULATION_TIME
+	double threshold = exp(-lambda)
+        while(Current_Product>=threshold){
             numberOfExponentials += 1;
-            Current_Sum += Math.random();
+            Current_Product *= Math.random();
         }
         int Poisson_Value = numberOfExponentials;
         return Poisson_Value;
