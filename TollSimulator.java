@@ -24,10 +24,10 @@ public final class TollSimulator {
      */
     private static int getPoisson(double probInASecond) {
         int numberOfExponentials = 0;
-	double Current_Product = 1;
-	double lamba = probInASecond*SIMULATION_TIME
-	double threshold = exp(-lambda)
-        while(Current_Product>=threshold){
+	    double Current_Product = 1;
+	    double lambda = probInASecond*TIME_STEP;
+	    double threshold = Math.exp(-lambda);
+        while(Current_Product >= threshold){
             numberOfExponentials += 1;
             Current_Product *= Math.random();
         }
@@ -41,7 +41,6 @@ public final class TollSimulator {
         road = setupRoad();
         int carNumber = 0;
         for (int t = 0; t < SIMULATION_TIME; t += TIME_STEP) {
-            // one new car created each time step
             int numCarsToAdd = getPoisson(.25);
             //for (int n = 0; n < numCarsToAdd; n++) {    
             if (Math.random() > .75) {
