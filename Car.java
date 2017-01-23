@@ -1,20 +1,20 @@
 import java.lang.StringBuilder;
 
 public class Car {
-    static final int PAY_TOLL_TIME = 15; //takes 15 seconds to pay cash toll
+    static final double PAY_TOLL_TIME = 15.0; //takes 15 seconds to pay cash toll
     static final double ACCELERATION = 11.5; //ft/s
     static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
     static final double CAR_LENGTH = 15.0;
-    static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2*TollSimulator.DISTANCE_TO_PLAZA);
+    static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2.0*TollSimulator.DISTANCE_TO_PLAZA);
 
     private int number;
+    private int boothSelected;
     private Lane lane;
     private double position;
     private double speed;
     private boolean hasEZPass;
     private double time;
     private double timeAtPlaza;
-    private int boothSelected;
     private double startTime;
     private double atBoothTime;
     private double leaveBoothTime;
@@ -27,7 +27,8 @@ public class Car {
         this.speed = DEFAULT_SPEED;
         this.number = num;
         this.startTime = start;
-        this.lane = Road.lanes[this.chooseLane()]; 
+        this.lane = Road.lanes[this.chooseLane()];
+        this.lane.enterLane(this); 
     }
 
     public int getNumber() {
@@ -46,6 +47,10 @@ public class Car {
         return this.position;
     }
 
+    public Lane getLane() {
+        return this.lane;
+    }
+
     /**Prints vital information in csv-format for ease of data analysis.*/
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -55,7 +60,8 @@ public class Car {
         s.append(this.leaveBoothTime + ",");
         s.append(this.time + ",");
         s.append(this.hasEZPass + ",");
-        s.append(this.boothSelected);
+        s.append(this.boothSelected + ",");
+        s.append(this.lane.getNumber());
         return s.toString();
     }
 
@@ -82,6 +88,19 @@ public class Car {
             if (this.speed < 60) {
                 this.speed += ACCELERATION * TollSimulator.TIME_STEP;
             }
+            if (this.lane.getNumber() == 2) {
+                // want to merge into lane 1 when possible
+                double dist = TollSimulator.DISTANCE_TO_PLAZA;
+                if (this.position - dist > 10) {
+                    if (this.position - dist <= 30) {
+                        if (Road.lanes[1].carInRange(dist + .05, this.position)) {
+                            this.changeLane(Road.lanes[1]);
+                        }
+                    } else if (Road.lanes[1].carInRange(this.position - this.distanceRequired(),this.position + 20)) {
+                        this.changeLane(Road.lanes[1]);
+                    }
+                }
+            }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
             speed -= DECELERATION;
             if (this.speed < 0) {
@@ -94,7 +113,16 @@ public class Car {
         this.time += TollSimulator.TIME_STEP;
         this.position += this.speed * TollSimulator.TIME_STEP;
     } 
-    
+
+    /** How far ahead of car in intended merge lane you must be, given the
+     * "two second rule" and assuming your speed is their speed
+     * @return the distance required between you and next car in order to
+     * change lanes, based on your speed.
+     */
+    private double distanceRequired() {
+        return this.speed * 2;
+    }
+
     /*private double deceleration() {
         int carsAhead = this.lane.getLength();
         double distanceUntilStop = TollSimulator.DISTANCE_UNTIL_PLAZA - 15.0*carsAhead;
@@ -103,7 +131,9 @@ public class Car {
     }*/
 
     public void changeLane(Lane l) {
+        this.lane.leaveLane(this);
         this.lane = l;
+        this.lane.enterLane(this);
     }
 
     /** Method to choose lane at beginning of approach */

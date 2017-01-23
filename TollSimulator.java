@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public final class TollSimulator {
-    final static int SIMULATION_TIME = 100000;
+    final static int SIMULATION_TIME = 1000;
     final static int TIME_STEP = 1;
     final static int DISTANCE_TO_PLAZA = 500;
     final static int TOTAL_DISTANCE = 1500;
@@ -37,14 +37,12 @@ public final class TollSimulator {
 
     public static void main(String[] args) {
         System.out.print("CAR_NUMBER,START_TIME,ENTER_QUEUE_TIME,");
-        System.out.println("LEAVE_TOLL_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED");
+        System.out.println("LEAVE_TOLL_TIME,TOTAL_TIME,HAS_EZ_PASS,BOOTH_SELECTED,FINAL_LANE");
         ArrayList<Car> cars = new ArrayList<Car>();
         road = setupRoad();
         int carNumber = 0;
         for (int t = 0; t < SIMULATION_TIME; t += TIME_STEP) {
-            int numCarsToAdd = getPoisson(.25);
-            //for (int n = 0; n < numCarsToAdd; n++) {    
-            if (Math.random() > .75) {
+            if (Math.random() > .75) { 
                 cars.add(new Car(Math.random() > 0.5, carNumber++, t));
             }
             Iterator<Car> iter = cars.iterator();
@@ -54,6 +52,7 @@ public final class TollSimulator {
                     c.act();
                     if (c.getPosition() > TOTAL_DISTANCE) {
                         System.out.println(c);
+                        c.getLane().leaveLane(c);
                         iter.remove();
                     }
                 }
