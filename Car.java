@@ -72,6 +72,28 @@ public class Car {
         return this.speed;
     }
 
+    public double getAggressiveness() {
+        return this.aggressiveness;
+    }
+
+    public double getStartTime() {
+        return this.startTime;
+    }
+
+    public double getAtBoothTime() {
+        return this.atBoothTime;
+    }
+
+    public double getLeaveBoothTime() {
+        return this.leaveBoothTime;
+    }
+
+    public boolean getHasEZPass() {
+        return this.hasEZPass;
+    }
+
+
+
     /**Prints vital information in csv-format for ease of data analysis.*/
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -110,19 +132,18 @@ public class Car {
             if (this.speed < DEFAULT_SPEED * this.aggressiveness) {
                 this.speed += this.aggressiveness * ACCELERATION * TollSimulator.TIME_STEP;
             }
-            if (this.lane.getNumber() == 2) {
-                // want to merge into lane 1 when possible
-                double dist = TollSimulator.DISTANCE_TO_PLAZA;
-                if (this.position - dist > 10) {
-                    if (this.position - dist <= 30) {
-                        if (Road.lanes[1].carInRange(dist + .05, this.position) == null) {
-                            this.changeLane(Road.lanes[1]);
-                        } else {
-                            Car cr = Road.lanes[1].carInRange(this.position - this.distanceRequired(), this.position + 20);
-                            if (cr == null) {
-                                this.changeLane(Road.lanes[1]);
-                            }
-                        }
+            int laneToLeft = this.lane.getNumber() - 1;    
+            // want to merge into lane 1 when possible
+            double dist = TollSimulator.DISTANCE_TO_PLAZA;
+            if (this.position - dist > 10) {
+                if (this.position - dist <= 30) {
+                    if (Road.lanes[laneToLeft].carInRange(dist + .05, this.position) == null) {
+                        this.changeLane(Road.lanes[laneToLeft]);
+                    } 
+                } else {
+                    Car cr = Road.lanes[laneToLeft].closestBehind(this.position);
+                    if (cr != null && this.position >= this.distanceRequired(cr)) {
+                        this.changeLane(Road.lanes[laneToLeft]);
                     }
                 }
             }
@@ -150,8 +171,8 @@ public class Car {
      * @return the distance required between you and next car in order to
      * change lanes, based on your speed.
      */
-    private double distanceRequired() {
-        return (2 - this.aggressiveness) * this.speed * 2;
+    private double distanceRequired(Car c) {
+        return (2 - this.aggressiveness) * c.getSpeed() * 2;
     }
 
     /*private double deceleration() {

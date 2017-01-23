@@ -18,6 +18,7 @@ import java.util.LinkedList;
 public class Lane {
 
     private LinkedList<Car> queue;
+    private LinkedList<Car> carsInLane;
     private int number;
     private boolean moving;
     private int length;
@@ -25,6 +26,7 @@ public class Lane {
 
     public Lane(int lane_num) {
         this.queue = new LinkedList<Car>();
+        this.carsInLane = new LinkedList<Car>();
         this.number = lane_num;
         this.length = 0;
         this.moving = true;
@@ -73,4 +75,37 @@ public class Lane {
     public boolean firstInLine(Car c) {
         return this.queue.peek() == c;
     }
+
+    public void enterLane(Car c) {
+        carsInLane.add(c);
+    }
+
+    public void leaveLane(Car c) {
+        carsInLane.remove(c);
+    }
+
+    public Car carInRange(double low, double high) {
+        for (Car c: carsInLane) {
+            double pos = c.getPosition();
+            if (pos >= low && pos <= high) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    /** Finds the car closest behind the given position */
+    public Car closestBehind(double pos) {
+        Car nearestCar = null;
+        double closestDist = 20000; //super big
+        for (Car c: carsInLane) {
+            double diff = pos - c.getPosition();
+            if (diff > 0 && diff < closestDist) {
+                nearestCar = c;
+                closestDist = diff;
+            }
+        }
+        return nearestCar;
+    }
+
 }
