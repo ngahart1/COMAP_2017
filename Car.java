@@ -4,9 +4,8 @@ import java.util.Random;
 public class Car {
     static final double PAY_TOLL_TIME = 15.0; //takes 15 seconds to pay cash toll
     static final double ACCELERATION = 11.5; //ft/s
-    static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
+    static final double DEFAULT_SPEED = 95.3333; //65 mph in ft/s
     static final double CAR_LENGTH = 15.0;
-    static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2.0*TollSimulator.DISTANCE_TO_PLAZA);
     static final double MERGE_TIME = 1.0;
 
     private int number;
@@ -21,18 +20,19 @@ public class Car {
     private double atBoothTime;
     private double leaveBoothTime;
     private double aggressiveness;
+    private double deceleration;
 
-
-    public Car(boolean hasPass, int num, int start) {
+    public Car(boolean hasPass, int num, double start) {
         this.hasEZPass = hasPass;
         this.position = 0;
         this.time = 0;
-        this.speed = DEFAULT_SPEED;
         this.number = num;
         this.startTime = start;
         this.lane = Road.lanes[this.chooseLane()];
         this.lane.enterLane(this);
         this.aggressiveness = this.setAggressiveness();
+        this.speed = DEFAULT_SPEED * this.aggressiveness;
+        this.deceleration = Math.pow(this.speed, 2)/(2.0 * TollSimulator.DISTANCE_TO_PLAZA);
     }
 
     /** Determines the aggressiveness factor for a car.
@@ -103,7 +103,7 @@ public class Car {
             }
         } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
             //starting to speed back up again
-            if (this.speed < 60) {
+            if (this.speed < DEFAULT_SPEED * this.aggressiveness) {
                 this.speed += this.aggressiveness * ACCELERATION * TollSimulator.TIME_STEP;
             }
             if (this.lane.getNumber() == 2) {
@@ -120,10 +120,10 @@ public class Car {
                 }
             }
         } else if (!this.lane.forEZPass() && this.position < TollSimulator.DISTANCE_TO_PLAZA) {
-            speed -= DECELERATION;
-            if (this.speed < 0) {
+            speed -= this.deceleration;
+            if (this.speed < 0.0) {
                 this.position = TollSimulator.DISTANCE_TO_PLAZA;
-                this.speed = 0;
+                this.speed = 0.0;
                 this.lane.enter(this);
                 this.atBoothTime = this.time;
             }
