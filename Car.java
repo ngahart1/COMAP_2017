@@ -2,11 +2,11 @@ import java.lang.StringBuilder;
 import java.util.Random;
 
 public class Car {
-    static final double PAY_TOLL_TIME = 15.0; //takes 15 seconds to pay cash toll
     static final double ACCELERATION = 11.5; //ft/s
     static final double DEFAULT_SPEED = 95.3333; //65 mph in ft/s
     static final double CAR_LENGTH = 15.0;
-    static final double MERGE_TIME = 1.0;
+    static final double MERGE_TIME = 0.5;
+    static final double MEAN_TOLL_TIME = 15.0;
 
     private int number;
     private int boothSelected;
@@ -21,6 +21,8 @@ public class Car {
     private double leaveBoothTime;
     private double aggressiveness;
     private double deceleration;
+    private double payTollTime;
+    private int boothPaidAt;
 
     public Car(boolean hasPass, int num, double start) {
         this.hasEZPass = hasPass;
@@ -30,22 +32,19 @@ public class Car {
         this.startTime = start;
         this.lane = Road.lanes[this.chooseLane()];
         this.lane.enterLane(this);
-        this.aggressiveness = this.setAggressiveness();
+        this.payTollTime = this.getGaussian(MEAN_TOLL_TIME, 3);
+        this.aggressiveness = this.getGaussian(1, .1);
         this.speed = DEFAULT_SPEED * this.aggressiveness;
         this.deceleration = Math.pow(this.speed, 2)/(2.0 * TollSimulator.DISTANCE_TO_PLAZA);
     }
 
-    /** Determines the aggressiveness factor for a car.
-     * Assume aggressiveness is distributed as a normal,
-     * with mean of 1 and st. dev of .1. A driver one standard
-     * deviation above mean is 10% more aggressive than average,
-     * etc.
-     * @return random value taken from a normal(1,.1)
+    /**
+     * @return random value taken from a normal(mean,sigma)
      */
-    private double setAggressiveness() {
+    private double getGaussian(double mean, double sigma) {
         Random r = new Random();
         double norm = r.nextGaussian();
-        return (norm*.1) + 1;
+        return (norm*sigma) + mean;
     }
 
     public int getNumber() {
@@ -92,7 +91,13 @@ public class Car {
         return this.hasEZPass;
     }
 
+    public double getPayTollTime() {
+        return this.payTollTime;
+    }
 
+    public int getBoothPaidAt() {
+        return this.boothPaidAt;
+    }
 
     /**Prints vital information in csv-format for ease of data analysis.*/
     public String toString() {
@@ -119,13 +124,22 @@ public class Car {
      */
     public void act() {
         if (!this.lane.forEZPass() && this.lane.firstInLine(this)) {
-            //i.e. at tollbooth
+            //i.e. at toll plaza
             this.timeAtPlaza += TollSimulator.TIME_STEP;
-            if (this.timeAtPlaza == PAY_TOLL_TIME) {
+            if (this.timeAtPlaza >= this.payTollTime) {
+                this.boothPaidAt = this.lane.getNumber();
                 this.lane.setMoving(true);
                 this.position += 0.1; //so that if statement fails
                 this.leaveBoothTime = this.time;
                 this.lane.leave(); 
+            }
+        } else if (!this.lane.forEZPass() && this.position == TollSimulator.DISTANCE_TO_PLAZA) {
+            int lenHere = this.lane.getLength();
+            for (Lane l: Road.lanes) {
+                if (!l.forEZPass() && l.getLength() == 2 + lenHere) {
+                    System.out.println("In here");
+                    this.changeLane(l);
+                }
             }
         } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
             //starting to speed back up again
