@@ -1,4 +1,5 @@
 import java.lang.StringBuilder;
+import java.util.Random;
 
 public class Car {
     static final double PAY_TOLL_TIME = 15.0; //takes 15 seconds to pay cash toll
@@ -6,6 +7,7 @@ public class Car {
     static final double DEFAULT_SPEED = 88.0; //60 mph in ft/s
     static final double CAR_LENGTH = 15.0;
     static final double DECELERATION = Math.pow(DEFAULT_SPEED, 2)/(2.0*TollSimulator.DISTANCE_TO_PLAZA);
+    static final double MERGE_TIME = 1.0;
 
     private int number;
     private int boothSelected;
@@ -18,6 +20,7 @@ public class Car {
     private double startTime;
     private double atBoothTime;
     private double leaveBoothTime;
+    private double aggressiveness;
 
 
     public Car(boolean hasPass, int num, int start) {
@@ -28,7 +31,21 @@ public class Car {
         this.number = num;
         this.startTime = start;
         this.lane = Road.lanes[this.chooseLane()];
-        this.lane.enterLane(this); 
+        this.lane.enterLane(this);
+        this.aggressiveness = this.setAggressiveness();
+    }
+
+    /** Determines the aggressiveness factor for a car.
+     * Assume aggressiveness is distributed as a normal,
+     * with mean of 1 and st. dev of .1. A driver one standard
+     * deviation above mean is 10% more aggressive than average,
+     * etc.
+     * @return random value taken from a normal(1,.1)
+     */
+    private double setAggressiveness() {
+        Random r = new Random();
+        double norm = r.nextGaussian();
+        return (norm*.1) + 1;
     }
 
     public int getNumber() {
@@ -55,6 +72,7 @@ public class Car {
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append(this.number + ",");
+        s.append(this.aggressiveness + ",");
         s.append(this.startTime + ",");
         s.append(this.atBoothTime + ",");
         s.append(this.leaveBoothTime + ",");
@@ -86,7 +104,7 @@ public class Car {
         } else if (!this.lane.forEZPass() && this.position > TollSimulator.DISTANCE_TO_PLAZA) {
             //starting to speed back up again
             if (this.speed < 60) {
-                this.speed += ACCELERATION * TollSimulator.TIME_STEP;
+                this.speed += this.aggressiveness * ACCELERATION * TollSimulator.TIME_STEP;
             }
             if (this.lane.getNumber() == 2) {
                 // want to merge into lane 1 when possible
@@ -120,7 +138,7 @@ public class Car {
      * change lanes, based on your speed.
      */
     private double distanceRequired() {
-        return this.speed * 2;
+        return (2 - this.aggressiveness) * this.speed * 2;
     }
 
     /*private double deceleration() {
@@ -134,6 +152,7 @@ public class Car {
         this.lane.leaveLane(this);
         this.lane = l;
         this.lane.enterLane(this);
+        this.time += MERGE_TIME;
     }
 
     /** Method to choose lane at beginning of approach */
