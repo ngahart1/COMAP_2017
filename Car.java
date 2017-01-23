@@ -68,6 +68,10 @@ public class Car {
         return this.lane;
     }
 
+    public double getSpeed() {
+        return this.speed;
+    }
+
     /**Prints vital information in csv-format for ease of data analysis.*/
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -111,11 +115,14 @@ public class Car {
                 double dist = TollSimulator.DISTANCE_TO_PLAZA;
                 if (this.position - dist > 10) {
                     if (this.position - dist <= 30) {
-                        if (!Road.lanes[1].carInRange(dist + .05, this.position)) {
+                        if (Road.lanes[1].carInRange(dist + .05, this.position) == null) {
                             this.changeLane(Road.lanes[1]);
+                        } else {
+                            Car cr = Road.lanes[1].carInRange(this.position - this.distanceRequired(), this.position + 20);
+                            if (cr == null) {
+                                this.changeLane(Road.lanes[1]);
+                            }
                         }
-                    } else if (!Road.lanes[1].carInRange(this.position - this.distanceRequired(),this.position + 20)) {
-                        this.changeLane(Road.lanes[1]);
                     }
                 }
             }
@@ -127,6 +134,12 @@ public class Car {
                 this.lane.enter(this);
                 this.atBoothTime = this.time;
             }
+        } else if (this.lane.forEZPass()) {
+           Car cr = this.lane.carInRange(this.position, this.position + 2*CAR_LENGTH);
+           if (cr != null) {
+               // i.e. there is a car very close ahead of you
+               this.speed = cr.getSpeed();
+           }
         }
         this.time += TollSimulator.TIME_STEP;
         this.position += this.speed * TollSimulator.TIME_STEP;
