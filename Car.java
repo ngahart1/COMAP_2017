@@ -111,10 +111,10 @@ public class Car {
                 double dist = TollSimulator.DISTANCE_TO_PLAZA;
                 if (this.position - dist > 10) {
                     if (this.position - dist <= 30) {
-                        if (Road.lanes[1].carInRange(dist + .05, this.position)) {
+                        if (!Road.lanes[1].carInRange(dist + .05, this.position)) {
                             this.changeLane(Road.lanes[1]);
                         }
-                    } else if (Road.lanes[1].carInRange(this.position - this.distanceRequired(),this.position + 20)) {
+                    } else if (!Road.lanes[1].carInRange(this.position - this.distanceRequired(),this.position + 20)) {
                         this.changeLane(Road.lanes[1]);
                     }
                 }
