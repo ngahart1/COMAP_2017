@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public final class TollSimulator {
-    final static int SIMULATION_TIME = 1000;
+    final static int SIMULATION_TIME = 100000;
     final static int TIME_STEP = 1;
     final static int DISTANCE_TO_PLAZA = 500;
     final static int TOTAL_DISTANCE = 1500;
